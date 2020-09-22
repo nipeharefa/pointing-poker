@@ -10,9 +10,10 @@ interface RoomRouteParam {
     id?: string
 };
 
+let db1 = database(firebaseApp.app());
+
 const Room = () => {
 
-    let db1 = database(firebaseApp.app());
 
     const inputRef = createRef<HTMLInputElement>();
 
@@ -21,8 +22,6 @@ const Room = () => {
     const [roomName, setRoomName] = useState<string>('');
     const [isJoined, setIsJoined] = useState<boolean>(false);
     const [players, setPlayers] = useState<Array<any>>([]);
-
-    let app = firebaseApp;
     // database
 
     const refURL = `https://hilihao-65f1d.firebaseio.com/${params.id}`;
@@ -30,9 +29,7 @@ const Room = () => {
 
     let join = async () => {
         let name = inputRef.current?.value
-        let db = await db1.
-            refFromURL(playerURL).
-            push({
+        let db = await db1.refFromURL(playerURL).push({
                 name,
                 vote: 0,
             });
@@ -58,31 +55,9 @@ const Room = () => {
             }
             setPlayers(arr);
         }
-        const unsubscribe = db1.refFromURL(playerURL).on('value', handler);
-
-        return () => {
-            // unsubscribe();
-        }
-    }, [])
-
-    // let arr : Array<any> = [];
-
-    // if (players) {
-    //     arr = Array.from(Object.keys(players))
-    //     console.log(arr);
-    // }
-
-    // const PlayerSection = () => {
-    //     return (
-    //         <div>
-    //             {arr.map((x) => (
-    //                 <p key={x}>{players.get(x).name}</p>
-    //             ))}
-    //         </div>
-    //     );
-    // };
-
-    // console.log('remder', arr);
+        
+        db1.refFromURL(playerURL).on('value', handler);
+    }, []);
 
     return(
         <>
